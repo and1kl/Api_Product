@@ -1,0 +1,8 @@
+# class files
+target/
+
+# vs code
+.vscode/
+.settings/
+.project
+.classpath
