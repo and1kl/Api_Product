@@ -1,5 +1,7 @@
 package de.hska.iwi.vslab.Api_Product.Services;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import de.hska.iwi.vslab.Api_Product.ConsumingREST.ConsumeCompProductCategory;
@@ -45,8 +47,8 @@ public class ApiProductService {
         return coreProduct.getProduct(id);
     }
 
-    public void findProduct(String searchValue, String priceMinValue, String priceMaxValue) {
-        coreProduct.findProduct(searchValue, priceMinValue, priceMaxValue);
+    public Product[] findProduct(Optional<String> searchValue, Optional<String> priceMinValue, Optional<String> priceMaxValue) {
+        return coreProduct.findProduct(searchValue, priceMinValue, priceMaxValue);
     }
 
     

@@ -1,5 +1,8 @@
 package de.hska.iwi.vslab.Api_Product.ConsumingREST;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
@@ -34,8 +37,9 @@ public class ConsumeCoreProduct {
         return restTemplate.getForObject(urlCoreProduct + "/" + id, Product.class);
     }
 
-    public void findProduct(String searchValue, String priceMinValue, String priceMaxValue) {
-        restTemplate.getForObject(urlCoreProduct + "/product/find", Product.class, searchValue, priceMinValue, priceMaxValue);
+    public Product[] findProduct(Optional<String> searchValue, Optional<String> priceMinValue, Optional<String> priceMaxValue) {
+        Product[] list = restTemplate.getForObject(urlCoreProduct + "/product/find", Product[].class, searchValue, priceMinValue, priceMaxValue);
+        return list;
     }
 
 }
