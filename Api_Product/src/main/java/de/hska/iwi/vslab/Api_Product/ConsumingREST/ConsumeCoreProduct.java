@@ -21,7 +21,7 @@ public class ConsumeCoreProduct {
     public Product[] getProducts(String baseUrl) {
         try {
             log.info("baseUrl test:" + baseUrl);
-            Product[] products = restTemplate.getForObject(baseUrl, Product[].class);
+            Product[] products = restTemplate.getForObject(baseUrl + "/product", Product[].class);
             return products;
         } catch (Exception e) {
             System.out.println(e);
