@@ -8,10 +8,9 @@ import org.springframework.web.client.RestTemplate;
 
 public class ConsumeCoreProduct {
 
+    //private String urlCoreProduct = "http://localhost:8081/product";
+
     private static final Logger log = LoggerFactory.getLogger(ConsumeCoreProduct.class);
-
-    private String urlCoreProduct = "http://localhost:8081/product";
-
     RestTemplate restTemplate = new RestTemplate();
 
     public Product[] getProducts() {
@@ -70,11 +69,17 @@ public class ConsumeCoreProduct {
         }
     }
 
-    public Product[] findProduct(Optional<String> searchValue, Optional<String> priceMinValue,
-            Optional<String> priceMaxValue) {
-        Product[] list = restTemplate.getForObject(urlCoreProduct + "/product/find", Product[].class, searchValue,
-                priceMinValue, priceMaxValue);
-        return list;
+    public Product[] findProduct(Optional<String> searchValue, Optional<String> priceMinValue,Optional<String> priceMaxValue) {
+        try {
+            UrlBuilder urlBuilder = new UrlBuilder();
+            String url = urlBuilder.getFilterUrl(searchValue, priceMinValue,priceMaxValue);
+            log.info("URL:" + url);
+            Product[] list = restTemplate.getForObject(url, Product[].class);
+            return list;
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
+        }
     }
 
 }
