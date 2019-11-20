@@ -1,27 +1,24 @@
 package de.hska.iwi.vslab.Api_Product.ConsumingREST;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
-import de.hska.iwi.vslab.Api_Product.Controllers.ApiProductController;
-import java.io.IOException;
-import org.springframework.web.client.RestClientException;
 
 public class ConsumeCoreProduct {
 
     private static final Logger log = LoggerFactory.getLogger(ConsumeCoreProduct.class);
 
-    private String urlCoreProduct = "http://localhost:8080/product";
+    private String urlCoreProduct = "http://localhost:8081/product";
 
     RestTemplate restTemplate = new RestTemplate();
 
-    public Product[] getProducts(String baseUrl) {
+    public Product[] getProducts() {
         try {
-            log.info("baseUrl test:" + baseUrl);
-            Product[] products = restTemplate.getForObject(baseUrl + "/product", Product[].class);
+            UrlBuilder urlBuilder = new UrlBuilder();
+            log.info("URL:" + urlBuilder.getProductURL());
+            Product[] products = restTemplate.getForObject(urlBuilder.getProductURL(), Product[].class);
             return products;
         } catch (Exception e) {
             System.out.println(e);
@@ -30,19 +27,47 @@ public class ConsumeCoreProduct {
     }
 
     public void deleteProduct(int id) {
-        restTemplate.delete(urlCoreProduct + "/" + id);
+        try {
+            UrlBuilder urlBuilder = new UrlBuilder();
+            log.info("URL:" + urlBuilder.getSlashURL());
+            restTemplate.delete(urlBuilder.getSlashURL() + id);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
+        }
     }
 
     public void updateProduct(Product product) {
-        restTemplate.put(urlCoreProduct, product);
+        try {
+            UrlBuilder urlBuilder = new UrlBuilder();
+            log.info("URL:" + urlBuilder.getBaseUrl());
+            restTemplate.put(urlBuilder.getBaseUrl(), product);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
+        }
     }
 
     public void deleteAllProducts() {
-        restTemplate.delete(urlCoreProduct);
+        try {
+            UrlBuilder urlBuilder = new UrlBuilder();
+            log.info("URL:" + urlBuilder.getBaseUrl());
+            restTemplate.delete(urlBuilder.getBaseUrl());
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
+        }
     }
 
     public Product getProduct(int id) {
-        return restTemplate.getForObject(urlCoreProduct + "/" + id, Product.class);
+        try {
+            UrlBuilder urlBuilder = new UrlBuilder();
+            log.info("URL:" + urlBuilder.getBaseUrl());
+            return restTemplate.getForObject(urlBuilder.getUrlWithId(id), Product.class);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
+        }
     }
 
     public Product[] findProduct(Optional<String> searchValue, Optional<String> priceMinValue,

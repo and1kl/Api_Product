@@ -1,6 +1,7 @@
 package de.hska.iwi.vslab.Api_Product.Controllers;
 
 import de.hska.iwi.vslab.Api_Product.ConsumingREST.Product;
+import de.hska.iwi.vslab.Api_Product.ConsumingREST.UrlBuilder;
 import de.hska.iwi.vslab.Api_Product.Services.ApiProductService;
 
 import java.util.Optional;
@@ -20,15 +21,9 @@ public class ApiProductController {
     @Autowired
     private ApiProductService apiProductService;
 
-    @Autowired
-    private LoadBalancerClient loadBalancer;
 
     private static final Logger log = LoggerFactory.getLogger(ApiProductController.class);
 
-    public String getBaseUrlOfServiceInstance() {
-        ServiceInstance serviceInstance = loadBalancer.choose("core_product");
-        return serviceInstance.getUri().toString(); // equals baseUrl
-    }
 
     /**
      * Checks if categoryId actually exists, if yes then the product is added.
@@ -42,8 +37,7 @@ public class ApiProductController {
     @GetMapping("/product")
     public Product[] getAllProduct() {
         log.info("getAllProducts() was called");
-        String baseUrl = getBaseUrlOfServiceInstance();
-        return apiProductService.getProducts(baseUrl);
+        return apiProductService.getProducts();
     }
 
     @RequestMapping(value = { "/product/find" }, method = RequestMethod.GET)

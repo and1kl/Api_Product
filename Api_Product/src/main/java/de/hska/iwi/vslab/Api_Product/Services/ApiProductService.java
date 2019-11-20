@@ -2,6 +2,7 @@ package de.hska.iwi.vslab.Api_Product.Services;
 
 import java.util.Optional;
 
+import de.hska.iwi.vslab.Api_Product.ConsumingREST.UrlBuilder;
 import org.springframework.stereotype.Service;
 
 import de.hska.iwi.vslab.Api_Product.ConsumingREST.ConsumeCompProductCategory;
@@ -24,8 +25,8 @@ public class ApiProductService {
 
     ConsumeCoreProduct coreProduct = new ConsumeCoreProduct();
 
-    public Product[] getProducts(String baseUrl) {
-        return coreProduct.getProducts(baseUrl);
+    public Product[] getProducts() {
+        return coreProduct.getProducts();
     }
 
     public void deleteProduct(int id) {
