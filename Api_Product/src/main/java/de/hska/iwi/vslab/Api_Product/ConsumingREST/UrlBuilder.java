@@ -11,14 +11,17 @@ public class UrlBuilder {
     private String baseUrl_core_product;
     private String baseUrl_comp_product_category;
 
-    String getBaseUrl(){
+    String getBaseUrl_core_product(){
         return baseUrl_core_product;
+    }
+    String getBaseUrl_comp_product_category(){
+        return baseUrl_comp_product_category;
     }
 
     public UrlBuilder(){
         LoadBalancerClient loadBalancer = BeanUtil.getBean(LoadBalancerClient.class);
         ServiceInstance si_core_product = loadBalancer.choose("core_product");
-        ServiceInstance si_comp_product_category = loadBalancer.choose("core_product");
+        ServiceInstance si_comp_product_category = loadBalancer.choose("comp_product_category");
         this.baseUrl_core_product =  si_core_product.getUri().toString();
         this.baseUrl_comp_product_category = si_comp_product_category.getUri().toString();
     }
