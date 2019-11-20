@@ -21,14 +21,12 @@ public class ApiProductController {
     @Autowired
     private ApiProductService apiProductService;
 
-
     private static final Logger log = LoggerFactory.getLogger(ApiProductController.class);
-
 
     /**
      * Checks if categoryId actually exists, if yes then the product is added.
      */
-    @PostMapping("/product/{id}")
+    @PostMapping(value = "/product/{id}", consumes = "form-data")
     public void addProduct(@RequestBody String name, double price, int categoryId, String details) {
         log.info("addProduct(name, price, categoryId, details) was called");
         apiProductService.addProduct(name, price, categoryId, details);
