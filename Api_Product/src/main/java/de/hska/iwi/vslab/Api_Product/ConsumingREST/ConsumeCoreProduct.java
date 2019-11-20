@@ -39,8 +39,8 @@ public class ConsumeCoreProduct {
     public void updateProduct(Product product) {
         try {
             UrlBuilder urlBuilder = new UrlBuilder();
-            log.info("URL:" + urlBuilder.getBaseUrl());
-            restTemplate.put(urlBuilder.getBaseUrl(), product);
+            log.info("URL:" + urlBuilder.getBaseUrl_core_product());
+            restTemplate.put(urlBuilder.getBaseUrl_core_product(), product);
         } catch (Exception e) {
             System.out.println(e);
             throw e;
@@ -50,8 +50,8 @@ public class ConsumeCoreProduct {
     public void deleteAllProducts() {
         try {
             UrlBuilder urlBuilder = new UrlBuilder();
-            log.info("URL:" + urlBuilder.getBaseUrl());
-            restTemplate.delete(urlBuilder.getBaseUrl());
+            log.info("URL:" + urlBuilder.getBaseUrl_core_product());
+            restTemplate.delete(urlBuilder.getBaseUrl_core_product());
         } catch (Exception e) {
             System.out.println(e);
             throw e;
@@ -61,7 +61,7 @@ public class ConsumeCoreProduct {
     public Product getProduct(int id) {
         try {
             UrlBuilder urlBuilder = new UrlBuilder();
-            log.info("URL:" + urlBuilder.getBaseUrl());
+            log.info("URL:" + urlBuilder.getBaseUrl_core_product());
             return restTemplate.getForObject(urlBuilder.getUrlWithId(id), Product.class);
         } catch (Exception e) {
             System.out.println(e);

@@ -14,7 +14,7 @@ public class ConsumeCompProductCategory {
     public void addProduct(String name, double price, int categoryId, String details) {
         try {
         UrlBuilder urlBuilder = new UrlBuilder();
-        log.info("URL:" + urlBuilder.getBaseUrl());
+        log.info("URL:" + urlBuilder.getBaseUrl_comp_product_category());
         restTemplate.postForLocation(urlBuilder.getAddProductURL(), name, price, categoryId, details);
         } catch (Exception e) {
             System.out.println(e);
