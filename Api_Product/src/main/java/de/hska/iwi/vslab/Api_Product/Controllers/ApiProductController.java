@@ -26,8 +26,8 @@ public class ApiProductController {
     /**
      * Checks if categoryId actually exists, if yes then the product is added.
      */
-    @PostMapping(value = "/product/{id}", consumes = "form-data")
-    public void addProduct(@RequestBody String name, double price, int categoryId, String details) {
+    @PostMapping(value = "/product/{id}", consumes = "applicatiom/json")
+    public void addProduct(@RequestBody(required = true) String name, double price, int categoryId, String details) {
         log.info("addProduct(name, price, categoryId, details) was called");
         apiProductService.addProduct(name, price, categoryId, details);
     }
@@ -52,10 +52,11 @@ public class ApiProductController {
         return apiProductService.getProduct(id);
     }
 
-    @PutMapping("/product")
-    public void updateProduct(@RequestBody int id, String name, double price, int categoryId, String details) {
-        log.info("updateProduct(" + name.toString() + ") was called");
-        apiProductService.updateProduct(id, name, price, categoryId, details);
+    @PutMapping(path = "/product/{id}", consumes = "application/json")
+    public void updateProduct(@PathVariable int id, @RequestBody(required = true) Product request) {
+        log.info("updateProduct(" + request.getName().toString() + ") was called");
+        apiProductService.updateProduct(request.getId(), request.getName(), request.getPrice(), request.getCategoryId(),
+                request.getDetails());
     }
 
     @DeleteMapping("/product/{id}")

@@ -28,8 +28,8 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("Product[id='%d', name='%s', price=%e, categoryId=%d, details='%s']", id, name, price, categoryId,
-        details);
+        return String.format("Product[id='%d', name='%s', price=%e, categoryId=%d, details='%s']", id, name, price,
+                categoryId, details);
     }
 
     /**
@@ -38,24 +38,28 @@ public class Product {
     public int getId() {
         return id;
     }
+
     /**
      * @return the name
      */
     public String getName() {
         return name;
     }
+
     /**
      * @return the price
      */
     public double getPrice() {
         return price;
     }
+
     /**
      * @return the details
      */
     public String getDetails() {
         return details;
     }
+
     /**
      * @return the categoryIdFromProduct
      */
@@ -69,6 +73,7 @@ public class Product {
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
+
     /**
      * @param details the details to set
      */
@@ -82,6 +87,7 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
+
     /**
      * @param price the price to set
      */
