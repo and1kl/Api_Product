@@ -40,7 +40,7 @@ public class UrlBuilder {
     }
 
     String getUrlWithId(int id){
-        return baseUrl_core_product+"/"+id;
+        return getProductURL()+"/"+id;
     }
     String getFilterUrl(Optional<String> searchValue, Optional<String> priceMinValue, Optional<String> priceMaxValue){
 
