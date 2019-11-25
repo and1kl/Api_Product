@@ -26,8 +26,9 @@ public class ApiProductController {
     /**
      * Checks if categoryId actually exists, if yes then the product is added.
      */
-    @PostMapping(value = "/product/{id}", consumes = "applicatiom/json")
-    public void addProduct(@RequestBody(required = true) String name, double price, int categoryId, String details) {
+    @PostMapping(path = "/product", consumes = "application/json")
+    public void addProduct(@RequestBody(required = true) String name, Double price, Integer categoryId,
+            String details) {
         log.info("addProduct(name, price, categoryId, details) was called");
         apiProductService.addProduct(name, price, categoryId, details);
     }

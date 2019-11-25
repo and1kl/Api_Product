@@ -19,7 +19,7 @@ public class ApiProductService {
 
     ConsumeCompProductCategory compProductCategory = new ConsumeCompProductCategory();
 
-    public void addProduct(String name, double price, int categoryId, String details) {
+    public void addProduct(String name, Double price, Integer categoryId, String details) {
         compProductCategory.addProduct(name, price, categoryId, details);
     }
 
