@@ -20,7 +20,6 @@ public class ConsumeCompProductCategory {
         try {
             UrlBuilder urlBuilder = new UrlBuilder();
             log.info("URL:" + urlBuilder.getAddProductURL());
-            log.info("categoryID!!!!!" + payload);
             HttpEntity<Product> request = new HttpEntity<>(
                     new Product(payload.getName(), payload.getPrice(), payload.getCategoryId(), payload.getDetails()));
             restTemplate.postForLocation(urlBuilder.getAddProductURL(), request);
