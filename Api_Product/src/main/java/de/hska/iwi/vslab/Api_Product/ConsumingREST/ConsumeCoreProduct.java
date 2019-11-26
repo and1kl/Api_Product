@@ -28,8 +28,8 @@ public class ConsumeCoreProduct {
     public void deleteProduct(int id) {
         try {
             UrlBuilder urlBuilder = new UrlBuilder();
-            log.info("URL:" + urlBuilder.getSlashURL());
-            restTemplate.delete(urlBuilder.getSlashURL() + id);
+            log.info("URL:" + urlBuilder.getUrlWithId(id));
+            restTemplate.delete(urlBuilder.getUrlWithId(id));
         } catch (Exception e) {
             System.out.println(e);
             throw e;
@@ -50,8 +50,8 @@ public class ConsumeCoreProduct {
     public void deleteAllProducts() {
         try {
             UrlBuilder urlBuilder = new UrlBuilder();
-            log.info("URL:" + urlBuilder.getBaseUrl_core_product());
-            restTemplate.delete(urlBuilder.getBaseUrl_core_product());
+            log.info("URL:" + urlBuilder.getProductURL());
+            restTemplate.delete(urlBuilder.getProductURL());
         } catch (Exception e) {
             System.out.println(e);
             throw e;

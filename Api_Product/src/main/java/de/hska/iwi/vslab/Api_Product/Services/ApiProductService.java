@@ -19,8 +19,8 @@ public class ApiProductService {
 
     ConsumeCompProductCategory compProductCategory = new ConsumeCompProductCategory();
 
-    public void addProduct(String name, Double price, Integer categoryId, String details) {
-        compProductCategory.addProduct(name, price, categoryId, details);
+    public void addProduct(Product payload) {
+        compProductCategory.addProduct(payload);
     }
 
     ConsumeCoreProduct coreProduct = new ConsumeCoreProduct();
