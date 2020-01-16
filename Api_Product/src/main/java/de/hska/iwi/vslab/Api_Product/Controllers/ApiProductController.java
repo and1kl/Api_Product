@@ -30,11 +30,15 @@ public class ApiProductController {
      * Checks if categoryId actually exists, if yes then the product is added.
      */
     @PostMapping(path = "/product", consumes = "application/json")
-    @HystrixCommand(fallbackMethod = "defaultFallback")
+    //@HystrixCommand(fallbackMethod = "fallbackAddProduct")
     public void addProduct(@RequestBody(required = true) Product request) {
         log.info("addProduct(name, price, categoryId, details) was called" + request.getName() + request.getPrice()
                 + request.getCategoryId() + request.getDetails());
         apiProductService.addProduct(request);
+    }
+
+    public void fallbackAddProduct(Product product) {
+        System.out.printf("fallbackAddProduct");
     }
 
     @GetMapping("/product")
@@ -69,13 +73,13 @@ public class ApiProductController {
         return apiProductService.getProduct(id);
     }
 
-    public Product fallbackGetProduct() {
+    public Product fallbackGetProduct(int id) {
         Product product = new Product("productFallback",1.0, 1, "dies das");
         return product;
     }
 
     @PutMapping(path = "/product/{id}", consumes = "application/json")
-    @HystrixCommand(fallbackMethod = "defaultFallbackWithId")
+    //@HystrixCommand(fallbackMethod = "defaultFallbackWithId")
     public void updateProduct(@PathVariable int id, @RequestBody(required = true) Product request) {
         log.info("updateProduct(" + request.getName().toString() + ") was called");
         apiProductService.updateProduct(request.getId(), request.getName(), request.getPrice(), request.getCategoryId(),
@@ -83,24 +87,28 @@ public class ApiProductController {
     }
 
     @DeleteMapping("/product/{id}")
-    @HystrixCommand(fallbackMethod = "defaultFallbackWithId")
+    //@HystrixCommand(fallbackMethod = "defaultFallbackWithId")
     public void deleteProduct(@PathVariable int id) {
         log.info("deleteProduct(" + id + ") was called");
         apiProductService.deleteProduct(id);
     }
 
     @DeleteMapping("/product")
-    @HystrixCommand(fallbackMethod = "defaultFallback")
+    //@HystrixCommand(fallbackMethod = "defaultFallback")
     public void deleteProduct() {
         log.info("deleteProduct() was called");
         apiProductService.deleteAllProducts();
     }
 
-    public void defaultFallback(Throwable throwable) {
+   /* public void defaultFallback(Throwable throwable) {
         System.out.printf("DefaultFallback, exception=%s%n", throwable);
     }
 
     public void defaultFallbackWithId(int id, Throwable throwable) {
         System.out.printf("DefaultFallbackWithId, id=%s, exception=%s%n", id, throwable);
+    } */
+
+    public void defaultFallback() {
+        System.out.printf("DefaultFallback");
     }
 }
