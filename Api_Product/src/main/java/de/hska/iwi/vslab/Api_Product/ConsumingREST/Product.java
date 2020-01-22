@@ -12,7 +12,7 @@ public class Product {
     private int categoryId;
 
     // the framework needs a default constructor for whatever reason..
-    private Product() {
+    public Product() {
         name = "unknown";
         price = 0.0;
         details = "";

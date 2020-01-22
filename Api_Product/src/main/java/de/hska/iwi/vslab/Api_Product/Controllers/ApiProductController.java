@@ -1,26 +1,25 @@
 package de.hska.iwi.vslab.Api_Product.Controllers;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import de.hska.iwi.vslab.Api_Product.ConsumingREST.Product;
-import de.hska.iwi.vslab.Api_Product.ConsumingREST.UrlBuilder;
 import de.hska.iwi.vslab.Api_Product.Services.ApiProductService;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClientException;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.cloud.client.ServiceInstance;
 
 @RestController
 @EnableCircuitBreaker
 public class ApiProductController {
-
+    private final Map<Integer, Product> productCache = new LinkedHashMap<Integer, Product>();
     @Autowired
     private ApiProductService apiProductService;
 
@@ -30,35 +29,35 @@ public class ApiProductController {
      * Checks if categoryId actually exists, if yes then the product is added.
      */
     @PostMapping(path = "/product", consumes = "application/json")
-    //@HystrixCommand(fallbackMethod = "fallbackAddProduct")
+    @HystrixCommand(fallbackMethod = "addProductFallback", commandProperties = {
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2") })
     public void addProduct(@RequestBody(required = true) Product request) {
-        log.info("addProduct(name, price, categoryId, details) was called" + request.getName() + request.getPrice()
-                + request.getCategoryId() + request.getDetails());
         apiProductService.addProduct(request);
     }
 
-    public void fallbackAddProduct(Product product) {
-        System.out.printf("fallbackAddProduct");
+    public void addProductFallback(Product payload, Throwable e) {
+        System.out.printf("Add Product Failed! name=%s, exception=%s%n ", payload.getName(), e);
     }
 
     @GetMapping("/product")
-    @HystrixCommand(fallbackMethod = "fallbackGetProducts")
+    @HystrixCommand(fallbackMethod = "getProductsCache", commandProperties = {
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2") })
     public Product[] getAllProduct() {
-        log.info("getAllProducts() was called");
-        return apiProductService.getProducts();
+        Product[] products = apiProductService.getProducts();
+        for(Product product : products) {
+            productCache.putIfAbsent(product.getId(), product);
+        }
+        return products;
     }
 
-    public Product[] fallbackGetProducts() {
-        Product product1 = new Product("productFallback1",1.0, 1, "dies das");
-        Product product2 = new Product("productFallback2",2.0, 1, "dies das");
-        Product[] productA = new Product[2];
-        productA[0] = product1;
-        productA[1] = product2;
-        return productA;
+    public Product[] getProductsCache() {
+        Collection<Product> list = productCache.values();
+        Product[] products = new Product[productCache.values().size()];
+        products = list.toArray(products);
+        return products;
     }
 
     @RequestMapping(value = { "/product/find" }, method = RequestMethod.GET)
-    @HystrixCommand(fallbackMethod = "fallbackGetProducts")
     public Product[] getProducts(@RequestParam(value = "searchValue", required = false) Optional<String> searchValue,
             @RequestParam(value = "priceMinValue", required = false) Optional<String> priceMinValue,
             @RequestParam(value = "priceMaxValue", required = false) Optional<String> priceMaxValue) {
@@ -67,48 +66,47 @@ public class ApiProductController {
     }
 
     @GetMapping("/product/{id}")
-    @HystrixCommand(fallbackMethod = "fallbackGetProduct")
+    @HystrixCommand(fallbackMethod = "getProductCache", commandProperties = {
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2") })
     public Product getProduct(@PathVariable int id) {
-        log.info("getProduct(" + id + ") was called");
         return apiProductService.getProduct(id);
     }
 
-    public Product fallbackGetProduct(int id) {
-        Product product = new Product("productFallback",1.0, 1, "dies das");
-        return product;
+    public Product getProductCache(int id) {
+        return productCache.getOrDefault(id, new Product());
     }
 
     @PutMapping(path = "/product/{id}", consumes = "application/json")
-    //@HystrixCommand(fallbackMethod = "defaultFallbackWithId")
+    @HystrixCommand(fallbackMethod = "updateProductFallback", commandProperties = {
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2") })
     public void updateProduct(@PathVariable int id, @RequestBody(required = true) Product request) {
-        log.info("updateProduct(" + request.getName().toString() + ") was called");
         apiProductService.updateProduct(request.getId(), request.getName(), request.getPrice(), request.getCategoryId(),
                 request.getDetails());
     }
 
+    public void updateProductFallback(int id, Product payload, Throwable e) {
+        System.out.printf("Update Role Failed! id=%s, exception=%s%n ", id, e);
+    }
+
     @DeleteMapping("/product/{id}")
-    //@HystrixCommand(fallbackMethod = "defaultFallbackWithId")
+    @HystrixCommand(fallbackMethod = "deleteProductFallback", commandProperties = {
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2") })
     public void deleteProduct(@PathVariable int id) {
-        log.info("deleteProduct(" + id + ") was called");
         apiProductService.deleteProduct(id);
     }
 
     @DeleteMapping("/product")
-    //@HystrixCommand(fallbackMethod = "defaultFallback")
+    @HystrixCommand(fallbackMethod = "deleteProductsFallback", commandProperties = {
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2") })
     public void deleteProduct() {
-        log.info("deleteProduct() was called");
         apiProductService.deleteAllProducts();
     }
 
-   /* public void defaultFallback(Throwable throwable) {
-        System.out.printf("DefaultFallback, exception=%s%n", throwable);
+    public void deleteProductFallback(int id, Throwable throwable) {
+        System.out.printf("Delete product failed, id=%s, exception=%s%n", id, throwable);
     }
 
-    public void defaultFallbackWithId(int id, Throwable throwable) {
-        System.out.printf("DefaultFallbackWithId, id=%s, exception=%s%n", id, throwable);
-    } */
-
-    public void defaultFallback() {
-        System.out.printf("DefaultFallback");
+    public void deleteProductsFallback(Throwable throwable) {
+        System.out.printf("Delete products failed, exception=%s%n", throwable);
     }
 }
