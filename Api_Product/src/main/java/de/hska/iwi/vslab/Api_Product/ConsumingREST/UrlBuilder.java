@@ -3,6 +3,7 @@ package de.hska.iwi.vslab.Api_Product.ConsumingREST;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 
+import javax.validation.constraints.Null;
 import java.util.Optional;
 
 public class UrlBuilder {
@@ -22,8 +23,13 @@ public class UrlBuilder {
         LoadBalancerClient loadBalancer = BeanUtil.getBean(LoadBalancerClient.class);
         ServiceInstance si_core_product = loadBalancer.choose("core_product");
         ServiceInstance si_comp_product_category = loadBalancer.choose("comp_product_category");
-        this.baseUrl_core_product = si_core_product.getUri().toString();
-        this.baseUrl_comp_product_category = si_comp_product_category.getUri().toString();
+        try {
+            this.baseUrl_core_product = si_core_product.getUri().toString();
+            this.baseUrl_comp_product_category = si_comp_product_category.getUri().toString();
+        }catch(NullPointerException NP_ex){
+            this.baseUrl_core_product = "http://coreproduct:8091";// Schreibweise siehe Docker-Compose
+            this.baseUrl_comp_product_category = "http://compproductcategory:8081";// Schreibweise siehe Docker-Compose
+        }
     }
 
     // CoreProduct
